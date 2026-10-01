@@ -1,0 +1,71 @@
+import os
+# Import necessary libraries
+import matplotlib.pyplot as plt
+from google.colab import drive
+
+# Mount Google Drive
+drive.mount('/content/drive')
+
+# Function to visualize FIND-S Algorithm
+def visualize_find_s_algorithm(positive_examples):
+    # Initialize the hypothesis
+    hypothesis = ['Ø'] * len(positive_examples[0])
+    visualization = []
+
+    # Apply FIND-S algorithm
+    for idx, example in enumerate(positive_examples, start=1):
+        for i in range(len(example)):
+            if hypothesis[i] == 'Ø':
+                hypothesis[i] = example[i]
+            elif hypothesis[i] != example[i]:
+                hypothesis[i] = '?'
+
+        visualization.append((idx, " ".join(hypothesis)))
+
+    return visualization
+
+
+# Positive training examples
+positive_examples_find_s = [
+    ['Sunny', 'Warm', 'Normal', 'Strong', 'Warm', 'Same'],
+    ['Sunny', 'Warm', 'High', 'Strong', 'Warm', 'Same'],
+    ['Rainy', 'Cold', 'High', 'Strong', 'Cool', 'Change'],
+    ['Sunny', 'Hot', 'High', 'Strong', 'Cool', 'Change']
+]
+
+# Run FIND-S Algorithm
+hypothesis_find_s_visualization = visualize_find_s_algorithm(
+    positive_examples_find_s
+)
+
+# Display hypothesis after each example
+print("Hypothesis after each positive example:")
+for step in hypothesis_find_s_visualization:
+    print(f"Example {step[0]} : {step[1]}")
+
+# Plot visualization
+plt.figure(figsize=(12, 6))
+plt.plot(
+    [point[0] for point in hypothesis_find_s_visualization],
+    [point[1] for point in hypothesis_find_s_visualization],
+    marker='o'
+)
+
+plt.title('FIND-S Algorithm Visualization')
+plt.xlabel('Example Index')
+plt.ylabel('Hypothesis')
+plt.xticks(range(1, len(positive_examples_find_s) + 1))
+plt.grid(True)
+
+# Define the directory path
+save_directory = '/content/drive/MyDrive/ML Lab/ExNo02'
+# Create the directory if it doesn't exist
+os.makedirs(save_directory, exist_ok=True)
+
+# Save figure to Google Drive
+plt.savefig(
+    os.path.join(save_directory, 'FIND-S_Algorithm_Visualization.png'),
+    dpi=500
+)
+
+plt.show()
