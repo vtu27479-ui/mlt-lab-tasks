@@ -1,0 +1,90 @@
+import numpy as np
+
+import tensorflow as tf
+
+from tensorflow.keras.models import Sequential
+
+from tensorflow.keras.layers import Dense, Flatten
+
+from tensorflow.keras.datasets import mnist
+
+from tensorflow.keras.utils import to_categorical
+
+
+# Load MNIST dataset (handwritten digits)
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+
+# Normalize pixel values
+# Convert values from 0-255 to 0-1
+X_train = X_train / 255.0
+
+X_test = X_test / 255.0
+
+
+# Flatten 28x28 images to 1D array of 784 pixels
+X_train = X_train.reshape(-1, 784)
+
+X_test = X_test.reshape(-1, 784)
+
+
+# Convert labels to one-hot encoding
+y_train = to_categorical(y_train, 10)
+
+y_test = to_categorical(y_test, 10)
+
+
+# Build the Artificial Neural Network (ANN)
+model = Sequential([
+
+    # First Hidden Layer
+    Dense(
+        128,
+        activation='relu',
+        input_shape=(784,)
+    ),
+
+    # Second Hidden Layer
+    Dense(
+        64,
+        activation='relu'
+    ),
+
+    # Output Layer
+    # 10 classes for digits 0-9
+    Dense(
+        10,
+        activation='softmax'
+    )
+])
+
+
+# Compile the model
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+
+# Train the model using backpropagation
+model.fit(
+    X_train,
+    y_train,
+    epochs=10,
+    batch_size=32,
+    validation_data=(X_test, y_test)
+)
+
+
+# Evaluate the model on test data
+test_loss, test_acc = model.evaluate(
+    X_test,
+    y_test
+)
+
+
+# Print test accuracy
+print(
+    f"\nTest Accuracy: {test_acc * 100:.2f}%"
+)
